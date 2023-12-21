@@ -7,8 +7,10 @@ use core::f64;
 
 use udf::prelude::*;
 
-struct Trimmean {
+#[derive(Debug)]
+pub(crate) struct Trimmean {
     values: Vec<f64>,
+    proportion: f64,
 }
 
 #[register]
@@ -24,45 +26,48 @@ impl BasicUdf for Trimmean {
         // Check if the args are in correct types
         let arg0 = args.get(0).unwrap().value();
         if arg0.is_string() {
-            return Err(format!("1st arg must be real, decimal or int"));
+            return Err(String::from("1st arg must be real, decimal or int"));
         }
 
         let arg1 = args.get(1).unwrap().value();
         if arg1.is_string() || arg1.is_int() {
-            return Err(format!("2nd arg must be real or decimal"));
+            return Err(String::from("2nd arg must be real or decimal"));
+        }
+
+        // Check if the 2nd arg is valid
+        let proportion = match arg1 {
+            SqlResult::Real(Some(v)) => Some(v),
+            SqlResult::Decimal(Some(v)) => v.parse::<f64>().ok(),
+            _ => None,
+        };
+        let proportion = match proportion {
+            Some(prop) => prop,
+            None => return Err(String::from("Failed to convert 2nd arg into real")),
+        };
+        if proportion < 0.0 || 1.0 <= proportion {
+            return Err(String::from("2nd arg out of range (0, 1)"));
         }
 
         cfg.set_maybe_null(true);
 
-        Ok(Self { values: vec![] })
+        Ok(Self {
+            values: vec![],
+            proportion,
+        })
     }
 
     fn process<'a>(
         &'a mut self,
         _cfg: &UdfCfg<Process>,
-        args: &ArgList<Process>,
+        _args: &ArgList<Process>,
         _error: Option<NonZeroU8>,
     ) -> Result<Self::Returns<'a>, ProcessError> {
         if self.values.is_empty() {
             return Ok(None);
         }
 
-        // Check the 2nd argument (exclude proportion)
-        let prop = match args.get(1).unwrap().value() {
-            SqlResult::Real(Some(v)) => Some(v),
-            SqlResult::Decimal(Some(v)) => v.parse::<f64>().ok(),
-            _ => None,
-        };
-        let prop = match prop {
-            Some(prop) => prop,
-            None => return Err(ProcessError),
-        };
-        if prop < 0.0 || 1.0 <= prop {
-            return Err(ProcessError);
-        }
-
         // Calculate the number of elements trimmed
-        let trim = (self.values.len() as f64 * prop) as usize / 2;
+        let trim = (self.values.len() as f64 * self.proportion) as usize / 2;
         let values = if trim > 0 {
             // We can assume all the elements are finite
             self.values

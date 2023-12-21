@@ -4,3 +4,6 @@
 // https://opensource.org/licenses/MIT
 
 mod trimmean;
+
+#[cfg(test)]
+mod tests;
