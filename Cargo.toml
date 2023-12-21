@@ -1,0 +1,11 @@
+[package]
+name = "mariadb-trimmean-rs"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+udf = { version = "0.5.4", features = ["mock"] }
