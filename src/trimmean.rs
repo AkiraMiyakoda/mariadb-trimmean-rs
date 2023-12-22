@@ -3,8 +3,6 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-use core::f64;
-
 use udf::prelude::*;
 
 #[derive(Debug)]
