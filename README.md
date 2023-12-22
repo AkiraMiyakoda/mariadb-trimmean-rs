@@ -1,3 +1,6 @@
+![GitHub](https://img.shields.io/github/license/AkiraMiyakoda/mariadb-trimmean-rs)
+[![Rust](https://github.com/AkiraMiyakoda/mariadb-trimmean-rs/actions/workflows/rust.yml/badge.svg)](https://github.com/AkiraMiyakoda/mariadb-trimmean-rs/actions/workflows/rust.yml)
+
 # Trimmean plugin for MariaDB/MySQL
 
 This is a MariaDB/MySQL plugin offers an aggregate function inspired by TRIMMEAN() of Microsoft Excel.
