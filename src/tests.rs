@@ -94,59 +94,35 @@ fn invalid_args() {
 
     let mut row = mock_args![(Real 1.0, "", true)];
     let func = Trimmean::init(cfg.as_init(), row.as_init());
-    assert_eq!(
-        func.unwrap_err(),
-        String::from("Expected 2 args, but got 1")
-    );
+    assert_eq!(func.unwrap_err(), "Expected 2 args, but got 1");
 
     let mut row = mock_args![
         (Real 1.0, "", true), (Real 1.0, "", true), (Real 1.0, "", true)
     ];
     let func = Trimmean::init(cfg.as_init(), row.as_init());
-    assert_eq!(
-        func.unwrap_err(),
-        String::from("Expected 2 args, but got 3")
-    );
+    assert_eq!(func.unwrap_err(), "Expected 2 args, but got 3");
 
     let mut row = mock_args![(String "1.00", "", true), (Real 0.3, "", false)];
     let func = Trimmean::init(cfg.as_init(), row.as_init());
-    assert_eq!(
-        func.unwrap_err(),
-        String::from("1st arg must be real, decimal or int")
-    );
+    assert_eq!(func.unwrap_err(), "1st arg must be real, decimal or int");
 
     let mut row = mock_args![(Real 1.0, "", true), (Int 0, "", false)];
     let func = Trimmean::init(cfg.as_init(), row.as_init());
-    assert_eq!(
-        func.unwrap_err(),
-        String::from("2nd arg must be real or decimal")
-    );
+    assert_eq!(func.unwrap_err(), "2nd arg must be real or decimal");
 
     let mut row = mock_args![(Real 1.0, "", true), (String "ABC", "", false)];
     let func = Trimmean::init(cfg.as_init(), row.as_init());
-    assert_eq!(
-        func.unwrap_err(),
-        String::from("2nd arg must be real or decimal")
-    );
+    assert_eq!(func.unwrap_err(), "2nd arg must be real or decimal");
 
     let mut row = mock_args![(Real 1.0, "", true), (Decimal "ABC", "", false)];
     let func = Trimmean::init(cfg.as_init(), row.as_init());
-    assert_eq!(
-        func.unwrap_err(),
-        String::from("Failed to convert 2nd arg into real")
-    );
+    assert_eq!(func.unwrap_err(), "Failed to convert 2nd arg into real");
 
     let mut row = mock_args![(Real 1.0, "", true), (Decimal "-0.01", "", false)];
     let func = Trimmean::init(cfg.as_init(), row.as_init());
-    assert_eq!(
-        func.unwrap_err(),
-        String::from("2nd arg out of range (0, 1)")
-    );
+    assert_eq!(func.unwrap_err(), "2nd arg out of range [0.0, 1.0)");
 
     let mut row = mock_args![(Real 1.0, "", true), (Decimal "1.0", "", false)];
     let func = Trimmean::init(cfg.as_init(), row.as_init());
-    assert_eq!(
-        func.unwrap_err(),
-        String::from("2nd arg out of range (0, 1)")
-    );
+    assert_eq!(func.unwrap_err(), "2nd arg out of range [0.0, 1.0)");
 }
