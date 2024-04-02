@@ -12,16 +12,16 @@ fn real() {
     let mut cfg = MockUdfCfg::new();
 
     let mut rows = [
-        mock_args![(Real 1.0, "", true), (Real 0.3, "", false)],
-        mock_args![(Real 2.0, "", true), (Real None, "", false)],
-        mock_args![(Real 4.0, "", true), (Real None, "", false)],
-        mock_args![(Real 8.0, "", true), (Real None, "", false)],
-        mock_args![(Real 16.0, "", true), (Real None, "", false)],
-        mock_args![(Real 32.0, "", true), (Real None, "", false)],
-        mock_args![(Real 64.0, "", true), (Real None, "", false)],
-        mock_args![(Real 128.0, "", true), (Real None, "", false)],
-        mock_args![(Real 256.0, "", true), (Real None, "", false)],
-        mock_args![(Real 512.0, "", true), (Real None, "", false)],
+        mock_args![(Real 1.001, "", true), (Real 0.3, "", false)],
+        mock_args![(Real 2.002, "", true), (Real None, "", false)],
+        mock_args![(Real 4.004, "", true), (Real None, "", false)],
+        mock_args![(Real 8.008, "", true), (Real None, "", false)],
+        mock_args![(Real 16.016, "", true), (Real None, "", false)],
+        mock_args![(Real 32.032, "", true), (Real None, "", false)],
+        mock_args![(Real 64.064, "", true), (Real None, "", false)],
+        mock_args![(Real 128.128, "", true), (Real None, "", false)],
+        mock_args![(Real 256.256, "", true), (Real None, "", false)],
+        mock_args![(Real 512.512, "", true), (Real None, "", false)],
     ];
 
     let mut func = Trimmean::init(cfg.as_init(), rows[0].as_init()).unwrap();
@@ -31,7 +31,7 @@ fn real() {
     }
     let mean = func.process(cfg.as_process(), rows[9].as_process(), None);
 
-    assert_eq!(mean, Ok(Some(63.75)));
+    assert_eq!(mean, Ok(Some("63.81375".into())));
 }
 
 #[test]
@@ -58,7 +58,7 @@ fn int() {
     }
     let mean = func.process(cfg.as_process(), rows[9].as_process(), None);
 
-    assert_eq!(mean, Ok(Some(42.0)));
+    assert_eq!(mean, Ok(Some("42".into())));
 }
 
 #[test]
@@ -66,16 +66,16 @@ fn decimal() {
     let mut cfg = MockUdfCfg::new();
 
     let mut rows = [
-        mock_args![(Decimal "1.00", "", true), (Decimal "0.7", "", false)],
-        mock_args![(Decimal "2.00", "", true), (Decimal None, "", false)],
-        mock_args![(Decimal "4.00", "", true), (Decimal None, "", false)],
-        mock_args![(Decimal "8.00", "", true), (Decimal None, "", false)],
-        mock_args![(Decimal "16.00", "", true), (Decimal None, "", false)],
-        mock_args![(Decimal "32.00", "", true), (Decimal None, "", false)],
-        mock_args![(Decimal "64.00", "", true), (Decimal None, "", false)],
-        mock_args![(Decimal "128.00", "", true), (Decimal None, "", false)],
-        mock_args![(Decimal "256.00", "", true), (Decimal None, "", false)],
-        mock_args![(Decimal "512.00", "", true), (Decimal None, "", false)],
+        mock_args![(Decimal "1.001", "", true), (Decimal "0.7", "", false)],
+        mock_args![(Decimal "2.002", "", true), (Decimal None, "", false)],
+        mock_args![(Decimal "4.004", "", true), (Decimal None, "", false)],
+        mock_args![(Decimal "8.008", "", true), (Decimal None, "", false)],
+        mock_args![(Decimal "16.016", "", true), (Decimal None, "", false)],
+        mock_args![(Decimal "32.032", "", true), (Decimal None, "", false)],
+        mock_args![(Decimal "64.064", "", true), (Decimal None, "", false)],
+        mock_args![(Decimal "128.128", "", true), (Decimal None, "", false)],
+        mock_args![(Decimal "256.256", "", true), (Decimal None, "", false)],
+        mock_args![(Decimal "512.512", "", true), (Decimal None, "", false)],
     ];
 
     let mut func = Trimmean::init(cfg.as_init(), rows[0].as_init()).unwrap();
@@ -85,7 +85,7 @@ fn decimal() {
     }
     let mean = func.process(cfg.as_process(), rows[9].as_process(), None);
 
-    assert_eq!(mean, Ok(Some(30.0)));
+    assert_eq!(mean, Ok(Some("30.03".into())));
 }
 
 #[test]
@@ -116,7 +116,7 @@ fn invalid_args() {
 
     let mut row = mock_args![(Real 1.0, "", true), (Decimal "ABC", "", false)];
     let func = Trimmean::init(cfg.as_init(), row.as_init());
-    assert_eq!(func.unwrap_err(), "Failed to convert 2nd arg into real");
+    assert_eq!(func.unwrap_err(), "Failed to convert 2nd arg into decimal");
 
     let mut row = mock_args![(Real 1.0, "", true), (Decimal "-0.01", "", false)];
     let func = Trimmean::init(cfg.as_init(), row.as_init());
