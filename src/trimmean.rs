@@ -1,4 +1,4 @@
-// Copyright © 2023 Akira Miyakoda
+// Copyright © 2024 Akira Miyakoda
 //
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
