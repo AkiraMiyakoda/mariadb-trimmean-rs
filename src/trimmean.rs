@@ -16,34 +16,29 @@ impl BasicUdf for Trimmean {
     type Returns<'a> = Option<f64>;
 
     fn init(cfg: &UdfCfg<Init>, args: &ArgList<Init>) -> Result<Self, String> {
-        // Check the number and types of args
+        // Check the number of args
         if args.len() != 2 {
             return Err(format!("Expected 2 args, but got {}", args.len()));
         }
 
-        // Check if the args are in correct types
-        let arg0 = args.get(0).unwrap().value();
-        if arg0.is_string() {
-            return Err(String::from("1st arg must be real, decimal or int"));
+        // Check if the 1st args is numeric
+        match args.get(0).unwrap().value() {
+            SqlResult::Real(_) | SqlResult::Decimal(_) | SqlResult::Int(_) => {}
+            _ => return Err("1st arg must be real, decimal or int".into()),
         }
 
-        let arg1 = args.get(1).unwrap().value();
-        if arg1.is_string() || arg1.is_int() {
-            return Err(String::from("2nd arg must be real or decimal"));
-        }
-
-        // Check if the 2nd arg is valid
-        let proportion = match arg1 {
+        // Check if the 2nd arg is numeric and in [0.0, 1.0)
+        let proportion = match args.get(1).unwrap().value() {
             SqlResult::Real(Some(v)) => Some(v),
             SqlResult::Decimal(Some(v)) => v.parse::<f64>().ok(),
-            _ => None,
+            _ => return Err("2nd arg must be real or decimal".into()),
         };
         let proportion = match proportion {
             Some(prop) => prop,
             None => return Err(String::from("Failed to convert 2nd arg into real")),
         };
         if proportion < 0.0 || 1.0 <= proportion {
-            return Err(String::from("2nd arg out of range (0, 1)"));
+            return Err(String::from("2nd arg out of range [0.0, 1.0)"));
         }
 
         cfg.set_maybe_null(true);
@@ -107,11 +102,12 @@ impl AggregateUdf for Trimmean {
         };
 
         // Skip values doesn't convert into f64
-        if value.is_none() {
-            return Err(NonZeroU8::new(1).unwrap());
-        }
+        let value = match value {
+            Some(value) => value,
+            None => return Err(NonZeroU8::new(1).unwrap()),
+        };
 
-        self.values.push(value.unwrap());
+        self.values.push(value);
 
         Ok(())
     }
