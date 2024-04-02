@@ -78,11 +78,7 @@ impl BasicUdf for Trimmean {
 
 #[register]
 impl AggregateUdf for Trimmean {
-    fn clear(
-        &mut self,
-        _cfg: &UdfCfg<Process>,
-        _error: Option<NonZeroU8>,
-    ) -> Result<(), NonZeroU8> {
+    fn clear(&mut self, _cfg: &UdfCfg<Process>, _error: Option<NonZeroU8>) -> Result<(), NonZeroU8> {
         self.values.clear();
         Ok(())
     }
