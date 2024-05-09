@@ -601,9 +601,9 @@ dependencies = [
 
 [[package]]
 name = "udf-sys"
-version = "0.5.4"
+version = "0.5.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cecf44424cb59c4b2e019da9e37ebf9be9d57278ccb7efe48db1fd7b906354e1"
+checksum = "2131c53f9939448e343a3c089b288e88cd0349a930e238bc8ff82e5005f37c25"
 
 [[package]]
 name = "unicode-ident"
