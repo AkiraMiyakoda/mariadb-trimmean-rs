@@ -8,5 +8,5 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-rust_decimal = "1.36.0"
+rust_decimal = "1.37.0"
 udf = { version = "0.5.5", features = ["mock"] }
