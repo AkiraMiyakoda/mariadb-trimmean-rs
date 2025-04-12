@@ -61,7 +61,7 @@ impl BasicUdf for Trimmean {
         }
 
         // Calculate the number of elements trimmed
-        let len = Decimal::new(self.values.len() as i64, 0);
+        let len = Decimal::from(self.values.len());
         let trim = ((len * self.proportion) / Decimal::TWO)
             .floor()
             .to_usize()
@@ -76,7 +76,7 @@ impl BasicUdf for Trimmean {
         };
 
         // Calculate the mean
-        let mean = values.iter().fold(Decimal::ZERO, |sum, value| sum + *value) / Decimal::new(values.len() as i64, 0);
+        let mean = values.iter().fold(Decimal::ZERO, |sum, value| sum + *value) / Decimal::from(values.len());
         Ok(Some(mean.normalize().to_string()))
     }
 }
@@ -96,7 +96,7 @@ impl AggregateUdf for Trimmean {
     ) -> Result<(), NonZeroU8> {
         // Convert the 1st argument into Decimal
         let value = match args.get(0).unwrap().value() {
-            SqlResult::Int(Some(value)) => Some(Decimal::new(value, 0)),
+            SqlResult::Int(Some(value)) => Some(Decimal::from(value)),
             SqlResult::Real(Some(value)) => Decimal::from_f64(value),
             SqlResult::Decimal(Some(value)) => Decimal::from_str_exact(value).ok(),
             _ => None,
